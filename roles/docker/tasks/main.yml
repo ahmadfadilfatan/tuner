@@ -52,7 +52,7 @@
     name: "{{ docker_service }}"
     state: started
     enabled: true
-  notify: restart docker
+  notify: Restart docker
 
 - name: Add users to the docker group
   ansible.builtin.user:

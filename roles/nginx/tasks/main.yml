@@ -19,14 +19,14 @@
     owner: root
     group: root
     mode: "0644"
-  notify: reload nginx
+  notify: Reload nginx
 
 - name: Remove default Nginx site (Debian)
   ansible.builtin.file:
     path: /etc/nginx/sites-enabled/default
     state: absent
   when: ansible_os_family == "Debian"
-  notify: reload nginx
+  notify: Reload nginx
 
 - name: Ensure Nginx is enabled and running
   ansible.builtin.service:
