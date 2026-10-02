@@ -1,0 +1,35 @@
+---
+- name: Install Nginx (Debian family)
+  ansible.builtin.apt:
+    name: "{{ nginx_package }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == "Debian"
+
+- name: Install Nginx (RedHat family)
+  ansible.builtin.dnf:
+    name: "{{ nginx_package }}"
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Deploy reverse proxy config
+  ansible.builtin.template:
+    src: reverse-proxy.conf.j2
+    dest: /etc/nginx/conf.d/reverse-proxy.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload nginx
+
+- name: Remove default Nginx site (Debian)
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  when: ansible_os_family == "Debian"
+  notify: reload nginx
+
+- name: Ensure Nginx is enabled and running
+  ansible.builtin.service:
+    name: "{{ nginx_service }}"
+    state: started
+    enabled: true

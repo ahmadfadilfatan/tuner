@@ -1,0 +1,13 @@
+---
+nginx_package: nginx
+nginx_service: nginx
+
+# Upstream the reverse proxy forwards to
+nginx_upstream_host: "127.0.0.1"
+nginx_upstream_port: 3000
+
+# Server name (host header Nginx listens for)
+nginx_server_name: "_"
+
+# Listen port
+nginx_listen_port: 80

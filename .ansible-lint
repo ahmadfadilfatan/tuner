@@ -1,0 +1,11 @@
+---
+profile: production
+
+exclude_paths:
+  - .cache/
+  - .github/
+
+skip_list:
+  - yaml[line-length]       # long lines are OK in templates
+  - name[template]          # allow templated task names
+  - risky-file-permissions  # we set modes explicitly where it matters

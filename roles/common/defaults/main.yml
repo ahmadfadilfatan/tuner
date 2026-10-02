@@ -1,0 +1,16 @@
+---
+# Baseline packages installed on every host
+common_packages:
+  - curl
+  - git
+  - vim
+  - htop
+  - unzip
+  - ca-certificates
+  - gnupg
+
+# System timezone
+common_timezone: "UTC"
+
+# Whether to run the package cache update
+common_update_cache: true

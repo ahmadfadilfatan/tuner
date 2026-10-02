@@ -1,0 +1,73 @@
+---
+- name: Install docker on Debian family
+  when: ansible_os_family == "Debian"
+  block:
+    - name: Install prerequisites
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+        state: present
+
+    - name: Create keyring directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+
+    - name: Download Docker GPG key
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: "0644"
+
+    - name: Add Docker repository (deb822)
+      ansible.builtin.deb822_repository:
+        name: docker
+        types: deb
+        uris: https://download.docker.com/linux/ubuntu
+        suites: "{{ ansible_distribution_release }}"
+        components: stable
+        architectures: amd64
+        signed_by: /etc/apt/keyrings/docker.asc
+        state: present
+
+    - name: Install Docker (Debian)
+      ansible.builtin.apt:
+        name: "{{ docker_package }}"
+        state: present
+        update_cache: true
+
+- name: Install docker on RedHat family
+  when: ansible_os_family == "RedHat"
+  block:
+    - name: Install Docker (RedHat)
+      ansible.builtin.dnf:
+        name: docker
+        state: present
+
+- name: Ensure Docker service is enabled and running
+  ansible.builtin.service:
+    name: "{{ docker_service }}"
+    state: started
+    enabled: true
+  notify: restart docker
+
+- name: Add users to the docker group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: docker
+    append: true
+  loop: "{{ docker_users }}"
+  when: docker_users | length > 0
+
+- name: Verify Docker is installed
+  ansible.builtin.command:
+    cmd: docker --version
+  register: docker_version_check
+  changed_when: false
+
+- name: Show Docker version
+  ansible.builtin.debug:
+    msg: "Docker installed: {{ docker_version_check.stdout }}"

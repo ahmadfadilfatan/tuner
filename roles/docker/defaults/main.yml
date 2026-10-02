@@ -1,0 +1,9 @@
+---
+# Docker package name differs by distro family
+docker_package: docker-ce
+
+# Docker service name
+docker_service: docker
+
+# Users to add to the docker group (so they can run docker without sudo)
+docker_users: []

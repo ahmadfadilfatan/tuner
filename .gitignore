@@ -1,0 +1,16 @@
+# Ansible
+*.retry
+.cache/
+.ansible/
+
+# Collections installed by galaxy (re-created by requirements.yml)
+collections/
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.DS_Store
+*.swp
